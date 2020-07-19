@@ -18,9 +18,10 @@ class JokeGeneratorRepository @Inject constructor(
         return jokeGeneratorDao.getLastSavedRandomJoke()
     }
 
-    suspend fun fetchNewRandomJoke() {
-        if (jokeGeneratorService.getRandomJoke().isSuccessful) {
-            jokeGeneratorService.getRandomJoke().body()?.let {
+    private suspend fun fetchNewRandomJoke() {
+        val randomJokeResponse = jokeGeneratorService.getRandomJoke()
+        if (randomJokeResponse.isSuccessful) {
+            randomJokeResponse.body()?.let {
                 it.timeStamp = System.currentTimeMillis().toString()
                 jokeGeneratorDao.saveRandomJoke(it)
             }

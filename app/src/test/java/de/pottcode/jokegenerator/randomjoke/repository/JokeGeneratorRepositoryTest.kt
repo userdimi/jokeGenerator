@@ -2,18 +2,29 @@ package de.pottcode.jokegenerator.randomjoke.repository
 
 import de.pottcode.jokegenerator.repository.JokeGeneratorRepository
 import de.pottcode.jokegenerator.repository.database.JokeGeneratorDao
+import de.pottcode.jokegenerator.repository.model.RandomJoke
 import de.pottcode.jokegenerator.repository.network.JokeGeneratorService
+import de.pottcode.jokegenerator.utils.MainCoroutineScopeRule
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import org.junit.Assert.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
-import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
+import retrofit2.Response
 
 /**
  * (c) Dimitri Simon on 08.07.20
  */
+@ExperimentalCoroutinesApi
 class JokeGeneratorRepositoryTest {
+
+    @get:Rule
+    val coroutineScope = MainCoroutineScopeRule()
 
     private lateinit var jokeGeneratorRepository: JokeGeneratorRepository
 
@@ -22,6 +33,13 @@ class JokeGeneratorRepositoryTest {
 
     @MockK
     private lateinit var mockJokeGeneratorDao: JokeGeneratorDao
+
+    @MockK
+    private lateinit var mockRandomJokeResponse: Response<RandomJoke>
+
+    @MockK
+    private lateinit var mockRandomJoke: RandomJoke
+
 
     @Before
     fun setUp() {
@@ -33,16 +51,29 @@ class JokeGeneratorRepositoryTest {
             )
     }
 
-    @Ignore("Should be fixed in the next push")
     @Test
-    fun verifyRandomJokeIsGettingFromTheRepo() {
-        // assert
-        var expectedJoke = ""
+    fun verifyRandomJokeIsSavingIntoDBOnSuccess() {
+        // arrange
+        coEvery {
+            mockJokeGeneratorService.getRandomJoke()
+        } returns mockRandomJokeResponse
+
+        every {
+            mockRandomJokeResponse.isSuccessful
+        } returns true
+
+        every {
+            mockRandomJokeResponse.body()
+        } returns mockRandomJoke
 
         // act
-        expectedJoke = ""
+        runBlockingTest {
+            jokeGeneratorRepository.getRandomJoke()
+        }
 
         // assert
-        assertTrue(expectedJoke.isNotEmpty())
+        coVerify {
+            mockJokeGeneratorDao.saveRandomJoke(mockRandomJoke)
+        }
     }
 }
