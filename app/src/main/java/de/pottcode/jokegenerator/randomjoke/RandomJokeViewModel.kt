@@ -15,12 +15,19 @@ class RandomJokeViewModel @ViewModelInject constructor(private val repository: J
 
     private var _randomJoke = MutableLiveData<RandomJoke>()
 
+    init {
+        viewModelScope.launch {
+            _randomJoke.value = repository.getRandomJokeFromDatabase()
+        }
+    }
+
     val randomJoke: LiveData<RandomJoke>
         get() = _randomJoke
 
-    fun getRandomJoke() {
+    fun getRandomJokeFromApi() {
         viewModelScope.launch {
-            _randomJoke.value = repository.getRandomJoke()
+            _randomJoke.value = repository.getRandomJokeFromNetwork()
         }
     }
+
 }

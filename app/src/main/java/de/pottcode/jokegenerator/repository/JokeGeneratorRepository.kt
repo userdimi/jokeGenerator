@@ -13,7 +13,7 @@ class JokeGeneratorRepository @Inject constructor(
     private val jokeGeneratorDao: JokeGeneratorDao
 ) {
 
-    suspend fun getRandomJoke(): RandomJoke? {
+    suspend fun getRandomJokeFromNetwork(): RandomJoke? {
         fetchNewRandomJoke()
         return jokeGeneratorDao.getLastSavedRandomJoke()
     }
@@ -26,5 +26,9 @@ class JokeGeneratorRepository @Inject constructor(
                 jokeGeneratorDao.saveRandomJoke(it)
             }
         }
+    }
+
+    suspend fun getRandomJokeFromDatabase(): RandomJoke {
+        return jokeGeneratorDao.getLastSavedRandomJoke()
     }
 }

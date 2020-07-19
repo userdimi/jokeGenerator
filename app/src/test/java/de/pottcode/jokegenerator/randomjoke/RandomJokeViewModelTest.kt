@@ -45,12 +45,12 @@ class RandomJokeViewModelTest {
     @Test
     fun verifyThatGetRandomJokeIsCalled() {
         // act
-        randomJokeViewModel.getRandomJoke()
+        randomJokeViewModel.getRandomJokeFromApi()
 
         // assert
         verify {
             runBlockingTest {
-                mockRepository.getRandomJoke()
+                mockRepository.getRandomJokeFromNetwork()
             }
         }
     }
@@ -59,11 +59,11 @@ class RandomJokeViewModelTest {
     fun verifyRandomJokeLiveData() {
         // arrange
         coEvery {
-            mockRepository.getRandomJoke()
+            mockRepository.getRandomJokeFromNetwork()
         } returns mockRandomJoke
 
         // act
-        randomJokeViewModel.getRandomJoke()
+        randomJokeViewModel.getRandomJokeFromApi()
 
         // assert
         assertEquals(mockRandomJoke, randomJokeViewModel.randomJoke.value)

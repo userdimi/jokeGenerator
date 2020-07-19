@@ -68,12 +68,25 @@ class JokeGeneratorRepositoryTest {
 
         // act
         runBlockingTest {
-            jokeGeneratorRepository.getRandomJoke()
+            jokeGeneratorRepository.getRandomJokeFromNetwork()
         }
 
         // assert
         coVerify {
             mockJokeGeneratorDao.saveRandomJoke(mockRandomJoke)
+        }
+    }
+
+    @Test
+    fun verifyRandomJokeIsGettingFromDBOnInit() {
+        // act
+        runBlockingTest {
+            jokeGeneratorRepository.getRandomJokeFromDatabase()
+        }
+
+        // assert
+        coVerify {
+            mockJokeGeneratorDao.getLastSavedRandomJoke()
         }
     }
 }

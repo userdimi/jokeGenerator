@@ -32,7 +32,7 @@ class RandomJokeFragment : Fragment() {
         })
 
         button_get_random_joke.setOnClickListener {
-            randomJokeViewModel.getRandomJoke()
+            randomJokeViewModel.getRandomJokeFromApi()
         }
     }
 }
