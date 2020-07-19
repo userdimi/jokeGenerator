@@ -25,10 +25,14 @@ class JokeGeneratorRepository @Inject constructor(
                 it.timeStamp = System.currentTimeMillis().toString()
                 jokeGeneratorDao.saveRandomJoke(it)
             }
+        } else {
+            throw RandomJokeFetchError("Error by fetching a random joke", Throwable())
         }
     }
 
     suspend fun getRandomJokeFromDatabase(): RandomJoke {
         return jokeGeneratorDao.getLastSavedRandomJoke()
     }
+
+    class RandomJokeFetchError(message: String, cause: Throwable?) : Throwable(message, cause)
 }
