@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.random_joke_fragment.*
 class RandomJokeFragment : Fragment() {
 
     private val randomJokeViewModel: RandomJokeViewModel by viewModels()
-    //private val binding: RandomJokeFragmentBinding by binding(R.layout.random_joke_fragment)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +28,7 @@ class RandomJokeFragment : Fragment() {
 
         randomJokeViewModel.randomJoke.observe(viewLifecycleOwner, Observer {
             text_view_random_joke.text = it.joke
+            button_get_random_joke.text = "Funny! Get another one"
         })
 
         button_get_random_joke.setOnClickListener {

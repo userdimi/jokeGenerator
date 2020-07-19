@@ -8,7 +8,6 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 import de.pottcode.jokegenerator.repository.JokeGeneratorRepository
 import de.pottcode.jokegenerator.repository.database.JokeGeneratorDao
 import de.pottcode.jokegenerator.repository.network.JokeGeneratorService
-import java.util.concurrent.Executor
 
 /**
  * (c) Dimitri Simon on 12.07.20
@@ -29,9 +28,4 @@ object RepositoryModule {
         )
     }
 
-    @Provides
-    @ActivityRetainedScoped
-    fun provideExecutor(): Executor {
-        return Executor {}
-    }
 }
