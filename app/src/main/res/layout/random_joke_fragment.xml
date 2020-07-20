@@ -19,61 +19,73 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_view_logo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:src="@drawable/chucknorris_logo"
-            app:layout_constraintBottom_toTopOf="@+id/text_view_random_joke"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView_random_joke"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/text_view_random_joke"
+        <ScrollView
+            android:id="@+id/scrollView_random_joke"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            android:fontFamily="@font/electrolize"
-            android:text="@{viewmodel.randomJoke.joke}"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/button_get_random_joke"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_view_logo" />
+            app:layout_constraintTop_toBottomOf="@id/image_view_logo">
+
+            <TextView
+                android:id="@+id/text_view_random_joke"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/electrolize"
+                android:text="@{viewmodel.randomJoke.joke}"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </ScrollView>
 
         <Button
             android:id="@+id/button_get_random_joke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:backgroundTint="#F65D2C"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/button_background"
             android:fontFamily="@font/electrolize"
-            android:text="Get Random Joke"
-            android:textColor="#FFFFFF"
+            android:text="@string/button_get_random_joke"
+            android:textColor="@color/dark_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_random_joke">
+            app:layout_constraintTop_toBottomOf="@+id/scrollView_random_joke">
 
         </Button>
 
-        <ProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/progressBar_random_joke"
+            style="?android:progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:progressTint="#FFFFFF"
+            android:elevation="2dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@android:color/white"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/button_get_random_joke"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_get_random_joke"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/button_get_random_joke"
             tools:visibility="visible">
 
-        </ProgressBar>
+        </androidx.core.widget.ContentLoadingProgressBar>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

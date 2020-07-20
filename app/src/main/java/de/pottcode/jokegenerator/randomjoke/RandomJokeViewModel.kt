@@ -6,8 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.pottcode.jokegenerator.repository.JokeGeneratorRepository
-import de.pottcode.jokegenerator.repository.JokeGeneratorRepository.RandomJokeFetchError
-import de.pottcode.jokegenerator.repository.model.RandomJoke
+import de.pottcode.jokegenerator.repository.JokeGeneratorRepository.RandomJokeFetchException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -15,10 +14,7 @@ import kotlinx.coroutines.launch
 class RandomJokeViewModel @ViewModelInject constructor(private val repository: JokeGeneratorRepository) :
     ViewModel() {
 
-    val randomJoke: LiveData<RandomJoke>
-        get() = _randomJoke
-
-    private var _randomJoke = MutableLiveData<RandomJoke>()
+    val randomJoke = repository.randomJoke
 
     val isProgressbarVisible: LiveData<Boolean>
         get() = _isProgressbarVisible
@@ -31,15 +27,9 @@ class RandomJokeViewModel @ViewModelInject constructor(private val repository: J
     private var _snackBarText = MutableLiveData<String?>()
 
 
-    init {
-        viewModelScope.launch {
-            _randomJoke.value = repository.getRandomJokeFromDatabase()
-        }
-    }
-
     fun getRandomJokeFromApi() {
         fetchRandomJoke {
-            _randomJoke.postValue(repository.getRandomJokeFromNetwork())
+            repository.fetchRandomJokeFromNetwork()
         }
     }
 
@@ -48,8 +38,8 @@ class RandomJokeViewModel @ViewModelInject constructor(private val repository: J
             try {
                 _isProgressbarVisible.value = true
                 block()
-            } catch (error: RandomJokeFetchError) {
-                _snackBarText.value = error.message
+            } catch (exception: RandomJokeFetchException) {
+                _snackBarText.value = exception.message
             } finally {
                 _isProgressbarVisible.value = false
             }

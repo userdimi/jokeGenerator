@@ -1,16 +1,13 @@
 package de.pottcode.jokegenerator.randomjoke
 
 import de.pottcode.jokegenerator.repository.JokeGeneratorRepository
-import de.pottcode.jokegenerator.repository.model.RandomJoke
 import de.pottcode.jokegenerator.utils.InstantTaskExecutorRule
 import de.pottcode.jokegenerator.utils.MainCoroutineScopeRule
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,8 +29,6 @@ class RandomJokeViewModelTest {
     @MockK
     private lateinit var mockRepository: JokeGeneratorRepository
 
-    @MockK
-    private lateinit var mockRandomJoke: RandomJoke
     private lateinit var randomJokeViewModel: RandomJokeViewModel
 
     @Before
@@ -43,31 +38,20 @@ class RandomJokeViewModelTest {
     }
 
     @Test
-    fun verifyThatGetRandomJokeIsCalled() {
+    fun verifyThatRandomJokeIsCalledFromDatabase() {
         // act
-        randomJokeViewModel.getRandomJokeFromApi()
+        randomJokeViewModel.randomJoke
 
         // assert
-        verify {
-            runBlockingTest {
-                mockRepository.getRandomJokeFromNetwork()
-            }
-        }
+        verify { mockRepository.randomJoke }
     }
 
     @Test
-    fun verifyRandomJokeLiveData() {
-        // arrange
-        coEvery {
-            mockRepository.getRandomJokeFromNetwork()
-        } returns mockRandomJoke
-
+    fun verifyBehaviorOfGetRandomJokeFromApi() {
         // act
         randomJokeViewModel.getRandomJokeFromApi()
 
         // assert
-        assertEquals(mockRandomJoke, randomJokeViewModel.randomJoke.value)
+        coVerify { mockRepository.fetchRandomJokeFromNetwork() }
     }
-
-
 }

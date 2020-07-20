@@ -5,10 +5,7 @@ import de.pottcode.jokegenerator.repository.database.JokeGeneratorDao
 import de.pottcode.jokegenerator.repository.model.RandomJoke
 import de.pottcode.jokegenerator.repository.network.JokeGeneratorService
 import de.pottcode.jokegenerator.utils.MainCoroutineScopeRule
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -16,6 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
+import kotlin.test.assertFailsWith
 
 /**
  * (c) Dimitri Simon on 08.07.20
@@ -39,7 +37,6 @@ class JokeGeneratorRepositoryTest {
 
     @MockK
     private lateinit var mockRandomJoke: RandomJoke
-
 
     @Before
     fun setUp() {
@@ -68,7 +65,7 @@ class JokeGeneratorRepositoryTest {
 
         // act
         runBlockingTest {
-            jokeGeneratorRepository.getRandomJokeFromNetwork()
+            jokeGeneratorRepository.fetchRandomJokeFromNetwork()
         }
 
         // assert
@@ -78,15 +75,24 @@ class JokeGeneratorRepositoryTest {
     }
 
     @Test
-    fun verifyRandomJokeIsGettingFromDBOnInit() {
+    fun verifyRandomJokeIsGettingFromDB() {
         // act
-        runBlockingTest {
-            jokeGeneratorRepository.getRandomJokeFromDatabase()
-        }
+        jokeGeneratorRepository.randomJoke
 
         // assert
-        coVerify {
-            mockJokeGeneratorDao.getLastSavedRandomJoke()
+        verify { mockJokeGeneratorDao.getLastSavedRandomJoke() }
+    }
+
+    @Test
+    fun verifyFetchRandomJokeException() {
+        coEvery {
+            mockJokeGeneratorService.getRandomJoke()
+        } throws Throwable()
+        // act
+        assertFailsWith<JokeGeneratorRepository.RandomJokeFetchException> {
+            runBlockingTest {
+                jokeGeneratorRepository.fetchRandomJokeFromNetwork()
+            }
         }
     }
 }

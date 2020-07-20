@@ -1,5 +1,6 @@
 package de.pottcode.jokegenerator.repository.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -17,6 +18,6 @@ interface JokeGeneratorDao {
     suspend fun saveRandomJoke(randomJoke: RandomJoke)
 
     @Query("SELECT * FROM randomjoke ORDER BY timeStamp DESC LIMIT 1")
-    suspend fun getLastSavedRandomJoke(): RandomJoke
+    fun getLastSavedRandomJoke(): LiveData<RandomJoke?>
 
 }

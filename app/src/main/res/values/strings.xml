@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RxJokeGenerator</string>
+    <string name="button_get_random_joke">Get Random Joke</string>
+    <string name="empty_joke">There is no joke saved in the Database. Let\'s fetch one!</string>
 </resources>

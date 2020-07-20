@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -26,24 +27,54 @@ class RandomJokeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        subscribeTextView()
+        subscribeProgressBar()
+        subscribeSnackbar(view)
+        setButtonClickListener()
+    }
 
+    private fun subscribeTextView() {
         randomJokeViewModel.randomJoke.observe(viewLifecycleOwner, Observer { randomJoke ->
-            text_view_random_joke.text = randomJoke.joke
-            button_get_random_joke.text = "Funny! Get another one"
-        })
-
-        randomJokeViewModel.isProgressbarVisible.observe(viewLifecycleOwner, Observer { value ->
-            value.let { show ->
-                progressBar_random_joke.visibility = if (show) View.VISIBLE else View.GONE
+            if (randomJoke == null) {
+                text_view_random_joke.text =
+                    getString(R.string.empty_joke)
+            } else {
+                text_view_random_joke.text = randomJoke.joke
             }
         })
+    }
 
+    private fun subscribeProgressBar() {
+        randomJokeViewModel.isProgressbarVisible.observe(viewLifecycleOwner, Observer { show ->
+            if (show) {
+                button_get_random_joke.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.button_background
+                    )
+                )
+                progressBar_random_joke.visibility = View.VISIBLE
+            } else {
+                progressBar_random_joke.visibility = View.GONE
+                button_get_random_joke.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.dark_text_color
+                    )
+                )
+            }
+        })
+    }
+
+    private fun subscribeSnackbar(view: View) {
         randomJokeViewModel.snackbarText.observe(viewLifecycleOwner, Observer { text ->
             text?.let {
-                Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+                Snackbar.make(view, text, Snackbar.LENGTH_LONG).show()
             }
         })
+    }
 
+    private fun setButtonClickListener() {
         button_get_random_joke.setOnClickListener {
             randomJokeViewModel.getRandomJokeFromApi()
         }
